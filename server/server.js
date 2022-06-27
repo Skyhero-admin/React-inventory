@@ -6,6 +6,8 @@ const { Client } = require("pg");
 const cors = require("cors");
 const { response } = require("express");
 
+const PORT = 3001;
+
 app.use(cors());
 app.use(express.json());
 
@@ -19,9 +21,9 @@ app.use(express.json());
 const client = new Client({
   host: "localhost",
   port: "5432",
-  database: "InventoryDB",
+  database: "inventorydb",
   user: "postgres",
-  password: "Glenn0833",
+  password: "password",
 });
 
 client.connect();
@@ -32,34 +34,34 @@ app.post("/createUser", (req, res) => {
   console.log(username, password);
 
   client.query(
-    `insert into userInfo(username, password) values(${username}, ${password} )`,
+    `insert into userinfo(username, password) values('${username}', '${password}' );`,
     (err, result) => {
       if(!err){
-        console.log(err);
+        console.log(result);
       }else {
-        console.log(result.rows);
+        console.log(err);
       }
       client.end;
     }
   );
 });
 
-app.get("/login", (req, res) => {});
-// something ges here as well
-//const command = "SELECT * FROM userInfo WHERE name = ? AND password = ?";
-//   db.query(command, [req.body.user, req.body.password], (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
+app.get("/login", (req, res) => {
+  // const command = `SELECT * FROM userinfo WHERE username = ? AND password = ?`;
+    client.query(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`, (err, result) => {
+      console.log(result);
+      if (err) {
+        console.log(err);
+      }
 
-//     if (result) {
-//       console.log(result);
-//       res.send(result);
-//     } else {
-//       console.log("Wrong username or password");
-//     }
-//   });
-// });
+      if (result) {
+        res.send(result);
+      } else {
+        console.log("Wrong username or password");
+      }
+      client.end;
+    });
+});
 
 app.post("/addProduct", (req, res) => {
   // Add prod
@@ -71,6 +73,6 @@ app.put("/updateProduct", (req, res) => {
 
 app.delete("/delProd", (req, res) => {});
 
-app.listen(3001, () => {
-  console.log("The DB is on !!!");
+app.listen(PORT, () => {
+  console.log("The DB is on at ", PORT, "!!!");
 });
