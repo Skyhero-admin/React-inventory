@@ -1,15 +1,13 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const app = express();
 
 // const postgres = require("postgres");
-const { Pool, Client } = require("pg");
+const { Client } = require("pg");
 const cors = require("cors");
 const { response } = require("express");
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json());
 
 // const db = mysql.createConnection({
 //   user: "root",
@@ -18,24 +16,30 @@ app.use(bodyParser.json());
 //   database: "inventoryDB",
 // });
 
-const pool = new Pool({
+const client = new Client({
   host: "localhost",
   port: "5432",
   database: "InventoryDB",
-  user: "Glenn Mendonca",
+  user: "postgres",
   password: "Glenn0833",
 });
+
+client.connect();
 
 app.post("/createUser", (req, res) => {
   const username = req.body.user;
   const password = req.body.password;
   console.log(username, password);
 
-  pool.query(
-    "insert into userInfo(username, password) values(${username}, ${password} );",
+  client.query(
+    `insert into userInfo(username, password) values(${username}, ${password} )`,
     (err, result) => {
-      console.log(err, result);
-      pool.end();
+      if(!err){
+        console.log(err);
+      }else {
+        console.log(result.rows);
+      }
+      client.end;
     }
   );
 });
