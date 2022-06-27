@@ -7,7 +7,11 @@ const Login = () => {
 
   const LogUserIn = () => {
     axios
-      .get("http://localhost:3001/login", { user: username, password: pass })
+      .get("http://127.0.0.1:3001/login", {
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        },
+         user: username, password: pass })
       .then((res) => {
         console.log(res);
         setUsername("");

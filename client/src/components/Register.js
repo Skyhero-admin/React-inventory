@@ -8,7 +8,10 @@ const Register = () => {
 
   const addUser = () => {
     axios
-      .post("http://localhost:3001/createUser", {
+      .post("http://127.0.0.1:3001/createUser", {
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        },
         user: regUser,
         password: regPassword,
       })

@@ -9,7 +9,8 @@ const Homepage = () => {
   return (
     <div>
       <Navbar />
-      <Register />
+      <Login />
+      {/* <Register /> */}
     </div>
   );
 };
