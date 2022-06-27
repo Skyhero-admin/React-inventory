@@ -7,5 +7,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.18"
+  },
+  "scripts": {
+    "nodemon": "./node_modules/.bin/nodemon server.js"
   }
 }
