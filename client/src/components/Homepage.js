@@ -10,7 +10,7 @@ const Homepage = () => {
     <div>
       <Navbar />
       <Login />
-      {/* <Register /> */}
+      <Register />
     </div>
   );
 };

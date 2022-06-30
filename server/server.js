@@ -4,7 +4,7 @@ const app = express();
 // const postgres = require("postgres");
 const { Client } = require("pg");
 const cors = require("cors");
-const { response } = require("express");
+// const { response } = require("express");
 
 const PORT = 3001;
 
@@ -36,20 +36,24 @@ app.post("/createUser", (req, res) => {
   client.query(
     `insert into userinfo(username, password) values('${username}', '${password}' );`,
     (err, result) => {
-      if(!err){
-        console.log(result);
-      }else {
+      if(err){
         console.log(err);
+      }else {
+        console.log(result);
       }
       client.end;
     }
   );
+  res.send(true);
 });
 
-app.get("/login", (req, res) => {
+app.post("/login", (req, res) => {
   // const command = `SELECT * FROM userinfo WHERE username = ? AND password = ?`;
-    client.query(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`, (err, result) => {
-      console.log(result);
+  console.log (req); 
+  client.query(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`, (err, result) => {
+      // console.log(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`);
+      // console.log(result);
+
       if (err) {
         console.log(err);
       }
@@ -61,6 +65,7 @@ app.get("/login", (req, res) => {
       }
       client.end;
     });
+    res.send(true);
 });
 
 app.post("/addProduct", (req, res) => {
