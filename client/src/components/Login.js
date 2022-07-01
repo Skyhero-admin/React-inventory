@@ -14,7 +14,7 @@ const Login = () => {
         };
     // const params = new url.URLSearchParams(payload);
     axios
-      .get("http://127.0.0.1:3001/login", {
+      .post("http://127.0.0.1:3001/login", {
         responseType: "json",
         headers: {
           "Access-Control-Allow-Origin": "*",

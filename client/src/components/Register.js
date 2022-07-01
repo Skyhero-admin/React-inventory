@@ -7,6 +7,7 @@ const Register = () => {
   const [regPassword, setRegPassword] = useState("");
 
   const addUser = () => {
+    console.log(regUser, regPassword);
     axios
       .post("http://127.0.0.1:3001/createUser", {
         headers: {

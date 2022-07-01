@@ -1,23 +1,17 @@
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser')
 
-// const postgres = require("postgres");
 const { Client } = require("pg");
 const cors = require("cors");
-// const { response } = require("express");
-
 const PORT = 3001;
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 
-// const db = mysql.createConnection({
-//   user: "root",
-//   host: "localhost",
-//   password: "password",
-//   database: "inventoryDB",
-// });
-
+// DB Connection settings
 const client = new Client({
   host: "localhost",
   port: "5432",
@@ -28,45 +22,62 @@ const client = new Client({
 
 client.connect();
 
-app.post("/createUser", (req, res) => {
+// Register/Create users
+app.post("/createUser", async(req, res) => {
   const username = req.body.user;
   const password = req.body.password;
   console.log(username, password);
 
-  client.query(
+  try {
+    await client.query(
     `insert into userinfo(username, password) values('${username}', '${password}' );`,
     (err, result) => {
       if(err){
         console.log(err);
       }else {
         console.log(result);
+        res.send(result.data);
       }
       client.end;
     }
   );
-  res.send(true);
+  } catch (error) {
+    console.error(error.message);
+  }
 });
 
-app.post("/login", (req, res) => {
-  // const command = `SELECT * FROM userinfo WHERE username = ? AND password = ?`;
-  console.log (req); 
-  client.query(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`, (err, result) => {
-      // console.log(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`);
-      // console.log(result);
-
+// Login users
+app.post("/login", async(req, res) => {
+  try {
+    await client.query(`SELECT * FROM userinfo WHERE username = '${req.body.user}' AND password = '${req.body.password}'`, (err, result) => {
       if (err) {
         console.log(err);
       }
-
-      if (result) {
+      if (result.rowCount > 0) {
+        console.log(req.body);
         res.send(result);
       } else {
         console.log("Wrong username or password");
       }
-      client.end;
     });
-    res.send(true);
+  } catch (error) {
+    console.error(error.message);
+  }
+  client.end;
 });
+
+// get all users
+app.get("/all", async(req, res) => {
+  try {
+    await client.query("select * from userinfo;", (err, result) => {
+      res.send(result.rows);
+    });
+
+  } catch (error) {
+    console.error(error.message);
+  }
+  client.end;
+})
 
 app.post("/addProduct", (req, res) => {
   // Add prod
